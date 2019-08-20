@@ -1,0 +1,41 @@
+{
+  "name": "coc-webpack",
+  "version": "1.0.0",
+  "description": "autocomplete support for webpack config",
+  "keywords": [
+    "coc.nvim",
+    "webpack"
+  ],
+  "engines": {
+    "coc": "^0.0.73"
+  },
+  "main": "./out/index.js",
+  "repository": "https://github.com/iamcco/coc-webpack",
+  "author": "iamcco <ooiss@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p ./"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "webpack-ts-plugin",
+        "enableForWorkspaceTypeScriptVersions": false
+      }
+    ]
+  },
+  "dependencies": {
+    "webpack-ts-plugin": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.2",
+    "coc.nvim": "^0.0.73",
+    "typescript": "^3.5.3"
+  }
+}
