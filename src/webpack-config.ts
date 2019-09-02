@@ -1,4 +1,3 @@
-import { workspace } from 'coc.nvim';
 import { CompletionItem, InsertTextFormat, CompletionItemKind } from 'vscode-languageserver-types';
 
 import { marketUp, serializeLabel } from './util';
@@ -936,7 +935,6 @@ const getDefaultValue = (key: string): string => {
 
 export function getConfigValue(name: string): CompletionItem[] {
   const res: CompletionItem[] = []
-  workspace.showMessage(`${config[name]}`)
   if (config[name]) {
     const item = config[name]
     if (typeof item.value === 'string') {
@@ -973,7 +971,6 @@ export function getConfigValue(name: string): CompletionItem[] {
       })
     }
   }
-  workspace.showMessage(`res: ${res.length}`)
   return res
 }
 
