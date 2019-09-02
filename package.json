@@ -13,29 +13,40 @@
   "repository": "https://github.com/iamcco/coc-webpack",
   "author": "iamcco <ooiss@qq.com>",
   "license": "MIT",
+  "contributes": {
+    "configuration": {
+      "title": "coc-webpack config",
+      "properties": {
+        "coc-webpack.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "enable coc-webpack"
+        },
+        "coc-webpack.trace.server": {
+          "type": "string",
+          "default": "off",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "description": "Trace level of coc-webpack"
+        }
+      }
+    }
+  },
   "scripts": {
     "build": "tsc -p ./"
   },
   "activationEvents": [
-    "onLanguage:javascript",
-    "onLanguage:javascriptreact",
-    "onLanguage:typescript",
-    "onLanguage:typescriptreact"
+    "onLanguage:javascript"
   ],
-  "contributes": {
-    "typescriptServerPlugins": [
-      {
-        "name": "webpack-ts-plugin",
-        "enableForWorkspaceTypeScriptVersions": false
-      }
-    ]
-  },
   "dependencies": {
-    "webpack-ts-plugin": "*"
+    "typescript": "^3.5.3"
   },
   "devDependencies": {
     "@types/node": "^12.7.2",
     "coc.nvim": "^0.0.73",
-    "typescript": "^3.5.3"
+    "vscode-languageserver-protocol": "^3.14.1"
   }
 }

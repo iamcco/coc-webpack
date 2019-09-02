@@ -1,59 +1,27 @@
-import { ExtensionContext, extensions, workspace, WorkspaceConfiguration, OutputChannel } from 'coc.nvim'
+import { ExtensionContext, workspace, OutputChannel, languages } from 'coc.nvim'
+import { completeProvider } from './completion';
 
-const typeScriptExtensionId = 'coc-tsserver'
-const pluginId = 'webpack-ts-plugin'
-const configurationSection = 'coc-webpack'
-
-interface SynchronizedConfiguration {
-  name?: string
-}
+const pluginName = 'coc-webpack'
 
 let output: OutputChannel
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  const { subscriptions } = context
-  const config = workspace.getConfiguration(configurationSection)
-  output = workspace.createOutputChannel('coc-webpack')
+  const config = workspace.getConfiguration(pluginName)
 
-  extensions.onDidActiveExtension(extension => {
-    output.appendLine(`extension id: ${extension.id}`)
-    if (extension.id == typeScriptExtensionId) {
-      synchronizeConfiguration(extension.exports)
-    }
-  }, null, subscriptions)
+  if (config.get('enable'))
 
-}
-
-function getApi(): any {
-  const extension = extensions.all.find(o => o.id == typeScriptExtensionId)
-  if (!extensions) return
-  return extension!.exports
-}
-
-function synchronizeConfiguration(api: any): void {
-  if (!api) return
-  api.configurePlugin(pluginId, getConfiguration())
-  output.appendLine(`pluginId: ${pluginId}`)
-}
-
-function getConfiguration(): SynchronizedConfiguration {
-  const config = workspace.getConfiguration(configurationSection)
-  const outConfig: SynchronizedConfiguration = {}
-  withConfigValue(config, outConfig, 'name')
-  return outConfig
-}
-
-function withConfigValue<C, K extends Extract<keyof C, string>>(
-  config: WorkspaceConfiguration,
-  outConfig: C,
-  key: K,
-): void {
-  const configSetting = config.inspect<C[K]>(key)
-  if (!configSetting) {
-    return
+  if (config.get<string>('trace.server', '') !== 'off') {
+    output = workspace.createOutputChannel(pluginName)
   }
-  const value = config.get<any>(key, undefined)
-  if (typeof value !== 'undefined') {
-    outConfig[key] = value
-  }
+
+  context.subscriptions.push(
+    languages.registerCompletionItemProvider(
+      'coc-webpack',
+      'wp',
+      ['javascript'],
+      completeProvider,
+      [],
+      99
+    )
+  )
 }
