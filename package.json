@@ -36,7 +36,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p ./"
+    "build": "webpack"
   },
   "activationEvents": [
     "onLanguage:javascript"
@@ -47,6 +47,9 @@
   "devDependencies": {
     "@types/node": "^12.7.2",
     "coc.nvim": "^0.0.73",
-    "vscode-languageserver-protocol": "^3.14.1"
+    "ts-loader": "^6.0.4",
+    "vscode-languageserver-types": "^3.14.0",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
   }
 }

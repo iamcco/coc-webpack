@@ -1,9 +1,9 @@
-import * as ts from 'typescript/lib/tsserverlibrary'
-import { CompletionItemProvider, workspace } from 'coc.nvim'
-import { CompletionItem } from 'vscode-languageserver-protocol'
+import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
+import { CompletionItemProvider } from 'coc.nvim'
+import { CompletionItem } from 'vscode-languageserver-types'
 
 import { getIdentifierNode, getNodeLevel } from './util'
-import { getConfigKey } from './webpack-config';
+import { getConfigKey, getConfigValue } from './webpack-config';
 
 export const completeProvider: CompletionItemProvider = {
   provideCompletionItems(document, position): CompletionItem[] {
@@ -13,11 +13,11 @@ export const completeProvider: CompletionItemProvider = {
 
     const text = document.getText()
     const offset = document.offsetAt(position)
-    const sourceFile = ts.createSourceFile('webpack.config.js', text, ts.ScriptTarget.ES5, true)
+    const sourceFile = createSourceFile('webpack.config.js', text, ScriptTarget.ES5, true)
 
     if (sourceFile) {
       const node = getIdentifierNode(sourceFile, offset)
-      if (node && node.kind === ts.SyntaxKind.Identifier) {
+      if (node && node.kind === SyntaxKind.Identifier) {
         if (node === node.parent.getChildAt(0)) {
           const [name, level] = getNodeLevel(node)
           if (level) {
@@ -26,7 +26,7 @@ export const completeProvider: CompletionItemProvider = {
         } else if (node === node.parent.getChildAt(2)) {
           const [name, level] = getNodeLevel(node)
           if (level) {
-            return getConfigKey(name)
+            return getConfigValue(name)
           }
         }
       }

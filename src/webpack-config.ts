@@ -1,5 +1,7 @@
-import * as ts from 'typescript/lib/tsserverlibrary';
-import { CompletionItem, InsertTextFormat, CompletionItemKind } from 'vscode-languageserver-protocol';
+import { workspace } from 'coc.nvim';
+import { CompletionItem, InsertTextFormat, CompletionItemKind } from 'vscode-languageserver-types';
+
+import { marketUp, serializeLabel } from './util';
 
 // webpack config version: v4.39.2
 type Node = Record<string, {
@@ -934,6 +936,44 @@ const getDefaultValue = (key: string): string => {
 
 export function getConfigValue(name: string): CompletionItem[] {
   const res: CompletionItem[] = []
+  workspace.showMessage(`${config[name]}`)
+  if (config[name]) {
+    const item = config[name]
+    if (typeof item.value === 'string') {
+      res.push({
+        label: item.value,
+        kind: CompletionItemKind.Value,
+        documentation: marketUp(item.doc, item.value),
+        insertText: item.value,
+        insertTextFormat: InsertTextFormat.PlainText
+      })
+    } else if (Array.isArray(item.value)) {
+      (item.value as any[]).forEach(v => {
+        if (typeof v === 'string') {
+          res.push({
+            label: serializeLabel(v),
+            kind: CompletionItemKind.Value,
+            documentation: marketUp(item.doc, v),
+            sortText: '0',
+            insertText: v,
+            insertTextFormat: InsertTextFormat.PlainText
+          })
+        }
+        res.push({
+          label: serializeLabel(v.value),
+          kind: CompletionItemKind.Value,
+          documentation: marketUp(
+            [].concat(v.doc).concat('').concat(item.doc),
+            v.value
+          ),
+          sortText: '0',
+          insertText: v.value,
+          insertTextFormat: InsertTextFormat.PlainText
+        })
+      })
+    }
+  }
+  workspace.showMessage(`res: ${res.length}`)
   return res
 }
 
