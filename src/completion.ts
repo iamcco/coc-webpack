@@ -1,5 +1,5 @@
 import * as ts from 'typescript/lib/tsserverlibrary'
-import { CompletionItemProvider } from 'coc.nvim'
+import { CompletionItemProvider, workspace } from 'coc.nvim'
 import { CompletionItem } from 'vscode-languageserver-protocol'
 
 import { getIdentifierNode, getNodeLevel } from './util'
@@ -18,9 +18,16 @@ export const completeProvider: CompletionItemProvider = {
     if (sourceFile) {
       const node = getIdentifierNode(sourceFile, offset)
       if (node && node.kind === ts.SyntaxKind.Identifier) {
-        const [name, level] = getNodeLevel(node)
-        if (level) {
-          return getConfigKey(name)
+        if (node === node.parent.getChildAt(0)) {
+          const [name, level] = getNodeLevel(node)
+          if (level) {
+            return getConfigKey(name)
+          }
+        } else if (node === node.parent.getChildAt(2)) {
+          const [name, level] = getNodeLevel(node)
+          if (level) {
+            return getConfigKey(name)
+          }
         }
       }
     }

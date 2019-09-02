@@ -922,12 +922,25 @@ const getDefaultValue = (key: string): string => {
       }
     }
   }
-  return insertText
+  if (insertText === '{}') {
+    return '{\n\t${1}\n}'
+  } else if (insertText === '[]') {
+    return '[\n\t${1}\n]'
+  } else if (insertText === '[{}]') {
+    return '[\n\t{\n\t\t${1}\n\t}\n]'
+  }
+  return `\${1:${insertText}}`
+}
+
+export function getConfigValue(name: string): CompletionItem[] {
+  const res: CompletionItem[] = []
+  return res
 }
 
 export function getConfigKey(name: string): CompletionItem[] {
-  const regex = new RegExp(`^${name}\\.(\w+)`)
+  const regex = new RegExp(`^${name}\\.(\\w+)`)
   const res: CompletionItem[] = []
+  const tmp: Record<string, boolean> = {}
   Object.keys(config).forEach(key => {
     if (name === '') {
       const label = key.split('.')
@@ -940,22 +953,24 @@ export function getConfigKey(name: string): CompletionItem[] {
         kind: CompletionItemKind.EnumMember,
         documentation: [].concat(config[key].doc).join('\n'),
         sortText: '0',
-        insertText: `${key}: \${1:${insertText}},\${0}`,
+        insertText: `${key}: ${insertText},\${0}`,
         insertTextFormat: InsertTextFormat.Snippet,
-        commitCharacters: [':', ' ']
       })
     }
     const m = key.match(regex)
     if (m) {
+      if (tmp[m[1]]) {
+        return
+      }
+      tmp[m[1]] = true
       const insertText = getDefaultValue(key)
       res.push({
         label: m[1],
         kind: CompletionItemKind.EnumMember,
         documentation: [].concat(config[key].doc).join('\n'),
         sortText: '0',
-        insertText: `${m[1]}: \${1:${insertText}},\${0}`,
+        insertText: `${m[1]}: ${insertText},\${0}`,
         insertTextFormat: InsertTextFormat.Snippet,
-        commitCharacters: [':', ' ']
       })
     }
   })
