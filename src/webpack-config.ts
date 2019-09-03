@@ -1,4 +1,4 @@
-import { CompletionItem, InsertTextFormat, CompletionItemKind } from 'vscode-languageserver-types';
+import { CompletionItem, InsertTextFormat, CompletionItemKind, Hover } from 'vscode-languageserver-types';
 
 import { marketUp, serializeLabel } from './util';
 
@@ -1012,4 +1012,13 @@ export function getConfigKey(name: string): CompletionItem[] {
     }
   })
   return res
+}
+
+export function getConfigDoc(name: string): Hover | null {
+  if (config[name]) {
+    return {
+      contents: marketUp(config[name].doc)
+    }
+  }
+  return null
 }

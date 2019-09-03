@@ -1,17 +1,17 @@
+import { HoverProvider } from 'coc.nvim'
 import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
-import { CompletionItemProvider } from 'coc.nvim'
-import { CompletionItem } from 'vscode-languageserver-types'
+import { Hover } from 'vscode-languageserver-types'
 
 import { getIdentifierNode, getNodeLevel } from './util'
-import { getConfigKey, getConfigValue } from './webpack-config';
+import { getConfigDoc } from './webpack-config'
 
-export const completeProvider: CompletionItemProvider = {
-  provideCompletionItems(document, position): CompletionItem[] {
+export const hoverProvider: HoverProvider = {
+  provideHover(document, position): Hover | null {
     if (
       document.languageId !== 'javascript' ||
       !/webpack\.config\.js$/.test(document.uri)
     ) {
-      return []
+      return null
     }
 
     const text = document.getText()
@@ -24,17 +24,12 @@ export const completeProvider: CompletionItemProvider = {
         if (node === node.parent.getChildAt(0)) {
           const [name, level] = getNodeLevel(node)
           if (level) {
-            return getConfigKey(name)
-          }
-        } else if (node === node.parent.getChildAt(2)) {
-          const [name, level] = getNodeLevel(node)
-          if (level) {
-            return getConfigValue(name)
+            return getConfigDoc(name)
           }
         }
       }
     }
 
-    return []
+    return null
   }
 }

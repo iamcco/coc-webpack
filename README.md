@@ -24,4 +24,4 @@ module.exports = {
 ## TODO
 
 - [ ] coc-list
-- [ ] hover document
+- [x] hover document
