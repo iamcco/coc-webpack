@@ -1,4 +1,4 @@
-import { CompletionItem, InsertTextFormat, CompletionItemKind, Hover } from 'vscode-languageserver-types';
+import { CompletionItem, InsertTextFormat, CompletionItemKind, Hover, MarkupKind } from 'vscode-languageserver-types';
 
 import { marketUp, serializeLabel } from './util';
 
@@ -8,7 +8,7 @@ type Node = Record<string, {
   doc: string | string[]
 }>
 
-const config: Node = {
+export const config: Node = {
   mode: {
     value: [
       {
@@ -948,7 +948,7 @@ export function getConfigValue(name: string): CompletionItem[] {
     } else if (Array.isArray(item.value)) {
       (item.value as any[]).forEach(v => {
         if (typeof v === 'string') {
-          res.push({
+          return res.push({
             label: serializeLabel(v),
             kind: CompletionItemKind.Value,
             documentation: marketUp(item.doc, v),
@@ -1015,10 +1015,50 @@ export function getConfigKey(name: string): CompletionItem[] {
 }
 
 export function getConfigDoc(name: string): Hover | null {
-  if (config[name]) {
+  const item = config[name]
+  if (item) {
+    let contents: string[] = [].concat(item.doc)
+    if (typeof item.value === 'string') {
+      contents = contents.concat([
+        '',
+        'value:',
+        '',
+        '``` javascript',
+        ...[].concat(item.value),
+        '```'
+      ])
+    } else if (Array.isArray(item.value)) {
+      contents = contents.concat([
+        '',
+        'values:',
+      ])
+      ;(item.value as any[]).forEach(v => {
+        if (typeof v === 'string') {
+          contents = contents.concat([
+            '',
+            '``` javascript',
+            ...[].concat(v),
+            '```',
+            ''
+          ])
+        } else {
+          contents = contents.concat([
+            '',
+            '``` javascript',
+            ...[].concat(v.value),
+            '```',
+            [].concat(v.doc)
+          ])
+        }
+      })
+    }
     return {
-      contents: marketUp(config[name].doc)
+      contents: {
+        kind: MarkupKind.Markdown,
+        value: contents.join('\n')
+      }
     }
   }
+
   return null
 }

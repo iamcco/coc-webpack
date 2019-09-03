@@ -1,8 +1,9 @@
-import { ExtensionContext, workspace, OutputChannel, languages } from 'coc.nvim'
+import { ExtensionContext, workspace, OutputChannel, languages, listManager } from 'coc.nvim'
 
 import { completeProvider } from './completion';
 import { logger } from './logger';
 import { hoverProvider } from './hover'
+import WebpackList from './source'
 
 const pluginName = 'coc-webpack'
 
@@ -38,5 +39,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
       documentSelector,
       hoverProvider
     )
+  )
+
+  context.subscriptions.push(
+    listManager.registerList(new WebpackList())
   )
 }

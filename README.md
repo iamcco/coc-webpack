@@ -3,6 +3,13 @@
 > webpack's config options are crazy much 😢 and this is an
 > simple autocomplete support for (neo)vim
 
+features:
+
+- auto-complete
+- hover document
+
+![image](https://user-images.githubusercontent.com/5492542/64189804-99667600-cea7-11e9-8eb5-133dfa9b0561.png)
+
 ## Installation
 
 ``` vim
@@ -21,7 +28,8 @@ module.exports = {
 }
 ```
 
-## TODO
+### coc-list
 
-- [ ] coc-list
-- [x] hover document
+``` vim
+:CocList webpack
+```
