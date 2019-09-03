@@ -1,5 +1,5 @@
 import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
-import { CompletionItemProvider } from 'coc.nvim'
+import { CompletionItemProvider, workspace } from 'coc.nvim'
 import { CompletionItem } from 'vscode-languageserver-types'
 
 import { getIdentifierNode, getNodeLevel } from './util'
@@ -7,7 +7,11 @@ import { getConfigKey, getConfigValue } from './webpack-config';
 
 export const completeProvider: CompletionItemProvider = {
   provideCompletionItems(document, position): CompletionItem[] {
-    if (document.languageId !== 'javascript') {
+    workspace.showMessage(document.uri)
+    if (
+      document.languageId !== 'javascript' ||
+      !/webpack\.config\.js$/.test(document.uri)
+    ) {
       return []
     }
 

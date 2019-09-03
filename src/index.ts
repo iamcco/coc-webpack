@@ -9,8 +9,9 @@ let output: OutputChannel
 export async function activate(context: ExtensionContext): Promise<void> {
   const config = workspace.getConfiguration(pluginName)
 
-
-  if (config.get('enable'))
+  if (!config.get('enable')) {
+    return
+  }
 
   if (config.get<string>('trace.server', '') !== 'off') {
     output = workspace.createOutputChannel(pluginName)

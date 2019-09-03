@@ -6,7 +6,7 @@
 ## Installation
 
 ``` vim
-:cocInstall coc-webpack
+:CocInstall coc-webpack
 ```
 
 ## Usage
@@ -20,3 +20,8 @@ module.exports = {
     |
 }
 ```
+
+## TODO
+
+- [ ] coc-list
+- [ ] hover document
