@@ -2,8 +2,8 @@ import { HoverProvider } from 'coc.nvim'
 import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
 import { Hover } from 'vscode-languageserver-types'
 
-import { getIdentifierNode, getNodeLevel } from './util'
-import { getConfigDoc } from './webpack-config'
+import { getIdentifierNode, getNodeLevel } from '../util'
+import { getConfigDoc } from '../webpack-config'
 
 export const hoverProvider: HoverProvider = {
   provideHover(document, position): Hover | null {

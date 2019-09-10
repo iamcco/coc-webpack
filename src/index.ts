@@ -1,11 +1,12 @@
 import { ExtensionContext, workspace, OutputChannel, languages, listManager } from 'coc.nvim'
 
-import { completeProvider } from './completion';
+import { completeProvider } from './provider/completion';
 import { logger } from './logger';
-import { hoverProvider } from './hover'
+import { hoverProvider } from './provider/hover'
 import WebpackList from './source'
-
-const pluginName = 'coc-webpack'
+import { pluginName } from './constant'
+import { watchCommand } from './command/watch';
+import WebpackErrorList from './source/error'
 
 let output: OutputChannel
 
@@ -44,4 +45,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
   context.subscriptions.push(
     listManager.registerList(new WebpackList())
   )
+
+  context.subscriptions.push(
+    listManager.registerList(new WebpackErrorList(workspace.nvim))
+  )
+
+  // add webpack watch command
+  watchCommand(context)
 }

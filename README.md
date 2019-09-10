@@ -28,8 +28,18 @@ module.exports = {
 }
 ```
 
+### Command
+
+start webpack watch task for current project
+
+``` vim
+:CocCommand webpack.watch
+```
+
 ### coc-list
 
 ``` vim
 :CocList webpack
+
+:CocList webpackErrors
 ```

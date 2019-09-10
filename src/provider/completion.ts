@@ -2,8 +2,8 @@ import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
 import { CompletionItemProvider } from 'coc.nvim'
 import { CompletionItem } from 'vscode-languageserver-types'
 
-import { getIdentifierNode, getNodeLevel } from './util'
-import { getConfigKey, getConfigValue } from './webpack-config';
+import { getIdentifierNode, getNodeLevel } from '../util'
+import { getConfigKey, getConfigValue } from '../webpack-config';
 
 export const completeProvider: CompletionItemProvider = {
   provideCompletionItems(document, position): CompletionItem[] {

@@ -1,4 +1,3 @@
-import { readdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import {
   IList,
   ListAction,
@@ -11,10 +10,15 @@ import { config } from '../webpack-config'
 export default class WebpackList implements IList {
   public readonly name = 'webpack'
   public readonly description = 'webpack config options'
-  public readonly defaultAction = ''
+  public readonly defaultAction = 'default'
   public actions: ListAction[] = []
 
-  constructor() {}
+  constructor() {
+    this.actions.push({
+      name: 'default',
+      execute: () => {}
+    })
+  }
 
   public async loadItems(_context: ListContext): Promise<ListItem[]> {
     return Object.keys(config).map(key => {
