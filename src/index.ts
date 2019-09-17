@@ -1,14 +1,15 @@
 import { ExtensionContext, workspace, OutputChannel, languages, listManager } from 'coc.nvim'
 
-import { completeProvider } from './provider/completion';
+import { getCompleteProvider } from './provider/completion';
 import { logger } from './logger';
-import { hoverProvider } from './provider/hover'
+import { getHoverProvider } from './provider/hover'
 import WebpackList from './source'
 import { pluginName } from './constant'
 import { watchCommand } from './command/watch';
 import WebpackErrorList from './source/error'
 
 let output: OutputChannel
+let isDisableWhenUseTypeCheck = true
 
 const documentSelector = ['javascript']
 
@@ -18,6 +19,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
   if (!config.get('enable')) {
     return
   }
+
+  isDisableWhenUseTypeCheck = config.get('disableWhenUseTypeCheck')
 
   if (config.get<string>('trace.server', '') !== 'off') {
     output = workspace.createOutputChannel(pluginName)
@@ -29,7 +32,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       'coc-webpack',
       'wp',
       documentSelector,
-      completeProvider,
+      getCompleteProvider(isDisableWhenUseTypeCheck),
       [],
       99
     )
@@ -38,7 +41,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   context.subscriptions.push(
     languages.registerHoverProvider(
       documentSelector,
-      hoverProvider
+      getHoverProvider(isDisableWhenUseTypeCheck)
     )
   )
 

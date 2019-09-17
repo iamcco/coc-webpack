@@ -1,4 +1,4 @@
-import { Node, ObjectLiteralExpression, SourceFile, forEachChild, SyntaxKind, PropertyAssignment, ExpressionStatement, BinaryExpression } from 'typescript'
+import { Node, ObjectLiteralExpression, SourceFile, forEachChild, SyntaxKind, PropertyAssignment, ExpressionStatement, BinaryExpression, JSDoc } from 'typescript'
 import { MarkupContent, MarkupKind } from 'vscode-languageserver-types';
 
 export function findNode(sourceFile: SourceFile, position: number): Node | undefined {
@@ -40,13 +40,21 @@ export function getIdentifierNode(sourceFile: SourceFile, position: number): Nod
   return
 }
 
-export function getNodeLevel(node: Node): [string, number] {
+export function getNodeLevel(node: Node, isDisableWhenUseTypeCheck: boolean): [string, number] {
   let n = node
   let deep = 0
   let name = ''
   while(n && n.parent) {
     if (n.kind === SyntaxKind.ExpressionStatement && n.parent.kind === SyntaxKind.SourceFile) {
-      const be = (<ExpressionStatement>n).expression as BinaryExpression
+      const rootNode = <ExpressionStatement>n
+      const be = rootNode.expression as BinaryExpression
+      const jsDoc = (rootNode as any).jsDoc as JSDoc[]
+      if (isDisableWhenUseTypeCheck && jsDoc && jsDoc.length) {
+        if (jsDoc.some(jsDoc => /import\s*\(('|")webpack\1\)/.test(jsDoc.getText()))) {
+          deep = 0
+          break
+        }
+      }
       if (
         be.left &&
         be.left.kind === SyntaxKind.PropertyAccessExpression &&

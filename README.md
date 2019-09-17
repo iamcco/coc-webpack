@@ -3,6 +3,10 @@
 > webpack's config options are crazy much 😢 and this is an
 > simple autocomplete support for (neo)vim
 
+**Note**: you may not need this plugin anymore see: [type check in javascript](https://github.com/microsoft/TypeScript/issues/14377)
+
+> this plugin will default disable when use `@type` check
+
 features:
 
 - auto-complete
@@ -42,4 +46,12 @@ start webpack watch task for current project
 :CocList webpack
 
 :CocList webpackErrors
+```
+
+### Configuration
+
+``` jsonc
+"coc-webpack.enable": true, // enable coc-webpack
+"coc-webpack.disableWhenUseTypeCheck": true, // disable coc-webpack when use @type {import('webpack').Configuration} comment
+"coc-webpack.trace.server": "off" // Trace level of coc-webpack
 ```
