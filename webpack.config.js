@@ -24,7 +24,6 @@ module.exports = {
     ]
   },
   externals: {
-    'coc.nvim': 'commonjs coc.nvim',
-    'typescript': 'commonjs typescript'
+    'coc.nvim': 'commonjs coc.nvim'
   }
 }
