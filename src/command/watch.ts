@@ -81,7 +81,6 @@ export function watchCommand(context: ExtensionContext) {
       return pre
     }, workspace.cwd)
     const absCmdPath = path.join(workspaceFolder, cmd)
-    workspace.showMessage(`${absCmdPath}-${cmd}`)
     if (existsSync(absCmdPath)) {
       cwd = workspaceFolder
       task.start({
