@@ -1,4 +1,4 @@
-import { commands, workspace, Disposable, ExtensionContext } from 'coc.nvim'
+import { commands, workspace, Disposable, ExtensionContext, Uri } from 'coc.nvim'
 import path from 'path'
 import { existsSync } from 'fs'
 
@@ -71,13 +71,23 @@ export function watchCommand(context: ExtensionContext) {
       return
     }
     const cmd = path.join('./', 'node_modules', '.bin', 'webpack')
-    const absCmdPath = path.join(workspace.cwd, cmd)
+    const doc = await workspace.document
+    const currentFiePath = Uri.parse(doc.textDocument.uri).fsPath
+    const workspaceFolder = workspace.workspaceFolders.reduce((pre, cur) => {
+      const folder = Uri.parse(cur.uri).fsPath
+      if (currentFiePath.startsWith(folder) && folder.length > pre.length) {
+        return folder
+      }
+      return pre
+    }, workspace.cwd)
+    const absCmdPath = path.join(workspaceFolder, cmd)
+    workspace.showMessage(`${absCmdPath}-${cmd}`)
     if (existsSync(absCmdPath)) {
-      cwd = workspace.cwd
+      cwd = workspaceFolder
       task.start({
-        cmd,
+        cmd: absCmdPath,
         args: ['--watch', '--no-color'],
-        cwd: workspace.cwd
+        cwd: workspaceFolder
       })
       statusItem.text = 'webpack'
       statusItem.isProgress = true
