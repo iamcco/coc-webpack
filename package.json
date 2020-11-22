@@ -1,6 +1,6 @@
 {
   "name": "coc-webpack",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "autocomplete support for webpack config",
   "keywords": [
     "coc.nvim",

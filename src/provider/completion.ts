@@ -1,8 +1,8 @@
 import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
-import { CompletionItemProvider } from 'coc.nvim'
+import { CompletionItemProvider, workspace } from 'coc.nvim'
 import { CompletionItem } from 'vscode-languageserver-types'
 
-import { getIdentifierNode, getNodeLevel } from '../util'
+import { getNode, getNodeLevel } from '../util'
 import { getConfigKey, getConfigValue } from '../webpack-config';
 
 export const getCompleteProvider = (isDisableWhenUseTypeCheck: boolean): CompletionItemProvider => {
@@ -20,7 +20,7 @@ export const getCompleteProvider = (isDisableWhenUseTypeCheck: boolean): Complet
       const sourceFile = createSourceFile('webpack.config.js', text, ScriptTarget.ES5, true)
 
       if (sourceFile) {
-        const node = getIdentifierNode(sourceFile, offset)
+        const node = getNode(sourceFile, offset)
         if (node && node.kind === SyntaxKind.Identifier) {
           if (node === node.parent.getChildAt(0)) {
             const [name, level] = getNodeLevel(node, isDisableWhenUseTypeCheck)
@@ -33,6 +33,11 @@ export const getCompleteProvider = (isDisableWhenUseTypeCheck: boolean): Complet
               return getConfigValue(name)
             }
           }
+        } else if (node && node.kind === SyntaxKind.ObjectLiteralExpression) {
+            const [name, level] = getNodeLevel(node, isDisableWhenUseTypeCheck)
+            if (level) {
+              return getConfigKey(name)
+            }
         }
       }
 

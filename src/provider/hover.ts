@@ -2,7 +2,7 @@ import { HoverProvider } from 'coc.nvim'
 import { createSourceFile, ScriptTarget, SyntaxKind } from 'typescript'
 import { Hover } from 'vscode-languageserver-types'
 
-import { getIdentifierNode, getNodeLevel } from '../util'
+import { getNode, getNodeLevel } from '../util'
 import { getConfigDoc } from '../webpack-config'
 
 export const getHoverProvider = (isDisableWhenUseTypeCheck: boolean): HoverProvider => {
@@ -20,7 +20,7 @@ export const getHoverProvider = (isDisableWhenUseTypeCheck: boolean): HoverProvi
       const sourceFile = createSourceFile('webpack.config.js', text, ScriptTarget.ES5, true)
 
       if (sourceFile) {
-        const node = getIdentifierNode(sourceFile, offset)
+        const node = getNode(sourceFile, offset)
         if (node && node.kind === SyntaxKind.Identifier) {
           if (node === node.parent.getChildAt(0)) {
             const [name, level] = getNodeLevel(node, isDisableWhenUseTypeCheck)

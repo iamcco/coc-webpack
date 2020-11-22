@@ -25,8 +25,11 @@ export function getDeep(node: ObjectLiteralExpression, cur: Node): [string, numb
   return [name, count]
 }
 
-export function getIdentifierNode(sourceFile: SourceFile, position: number): Node | undefined {
+export function getNode(sourceFile: SourceFile, position: number): Node | undefined {
   const node = findNode(sourceFile, position)
+  if (node && node.kind === SyntaxKind.ObjectLiteralExpression) {
+    return node
+  }
   if (
     node && node.kind === SyntaxKind.Identifier &&
     node.parent &&
